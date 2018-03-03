@@ -45,10 +45,10 @@
 		<item>
 			<id>4</id>
 			<name>Apples</name>
-			<uom>gm</uom> <!-- Unit Of Measure -->
-			<unitSize>200</unitSize>
+			<uom>kg</uom> <!-- Unit Of Measure -->
+			<unitSize>1</unitSize>
 			<unitPrice>
-				<amount>180.00</amount>
+				<amount>120.00</amount>
 				<currency>INR</currency> <!-- Currency alpha3code -->
 			</unitPrice>
 			<quantity>
@@ -73,10 +73,10 @@
 		<item>
 			<id>6</id>
 			<name>Alphonso Mango</name>
-			<uom>gm</uom> <!-- Unit Of Measure -->
-			<unitSize>300</unitSize>
+			<uom>kg</uom> <!-- Unit Of Measure -->
+			<unitSize>1</unitSize>
 			<unitPrice>
-				<amount>100.00</amount>
+				<amount>180.00</amount>
 				<currency>INR</currency> <!-- Currency alpha3code -->
 			</unitPrice>
 			<quantity>

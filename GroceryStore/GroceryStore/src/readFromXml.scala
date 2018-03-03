@@ -3,35 +3,11 @@ import java.util.concurrent.ScheduledExecutorService
 import scala.collection.mutable.ListBuffer
 import xml._
 
- class dataStruct(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String,extra:String){
-  var uID:Integer=null
-   var name:String= null
-  var uom:String= null
-  var us:Integer  = null
-  var amount:Double= _
-  var currency:String= null
-  var stock:String= null
-
-  def this(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String){
-    this(uid,nm,um,usz,amt,curr,stk,null)
-    this.uID=this.uid
-    this.name=this.nm
-    this.uom=this.um
-    this.us=this.usz
-    this.amount=this.amt
-    this.currency=this.curr
-    this.stock=this.stk
-
-  }
-
-
-}
-
 object readFromXml {
 
   val lb= new ListBuffer[dataStruct]()
 
-  def importdata(): Unit ={
+  def importdata(): ListBuffer[dataStruct] ={
     lb.clear()
     val file= XML.loadFile("/home/varun/IdeaProjects/GroceryStore/src/GroceryData..xml")
     val uid_elem= file \\ "id"
@@ -49,6 +25,7 @@ object readFromXml {
       lb+= (new dataStruct(uid_elem(temp).text.toInt,name_elem(temp).text,uom_elem(temp).text,us_elem(temp).text.toInt,amount_elem(temp).text.toDouble,curr_elem(temp).text,stock_elem(temp).text))
       temp+=1
     }
+    return lb
 
   }
 
@@ -84,7 +61,34 @@ object readFromXml {
     importdata()
     updateData()
     getData()
+//    while (true){
+//
+//    }
 
   }
+
+}
+
+ class dataStruct(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String,extra:String){
+  var uID:Integer=null
+   var name:String= null
+  var uom:String= null
+  var us:Integer  = null
+  var amount:Double= _
+  var currency:String= null
+  var stock:String= null
+
+  def this(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String){
+    this(uid,nm,um,usz,amt,curr,stk,null)
+    this.uID=this.uid
+    this.name=this.nm
+    this.uom=this.um
+    this.us=this.usz
+    this.amount=this.amt
+    this.currency=this.curr
+    this.stock=this.stk
+
+  }
+
 
 }
