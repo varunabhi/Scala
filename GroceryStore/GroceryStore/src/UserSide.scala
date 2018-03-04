@@ -1,3 +1,11 @@
+//THIS IS USER SIDE, SWITCH ON THE ADMIN FIRST TO ACCESS DISCOUNTS
+
+
+
+import java.io.{BufferedInputStream, BufferedOutputStream, DataInputStream, DataOutputStream}
+import java.net.Socket
+import javax.swing.{JFrame, JOptionPane}
+
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -6,8 +14,10 @@ import scala.collection.mutable.ListBuffer
 
 
 
-object UserSide{
+object UserSide {
+  var hm_discounts= new mutable.HashMap[Int,String]()
 
+   var hm_discountCart= new mutable.HashMap[Int,Double]()
 
   var hm_cart=new mutable.HashMap[Int,Double]() //clear was not available in simple Map
 
@@ -65,11 +75,12 @@ object UserSide{
     shwSpecDetails(id)
   }
 
-  def viewCart(x:Int=0): Unit = {
+  def viewCart(x:Int=0): Double = {
 
     if (hm_cart.isEmpty) {
       println("Cart is Empty")
       callAgain()
+      return 0
     }
     else {
       var total:Double=0
@@ -82,36 +93,104 @@ object UserSide{
       obj = obj :+ Seq("-","-","-",total)
       println(Tabulator.format(obj))
 
+      if(x==0){
+      if(hm_discountCart.size!=0){
+        println("In extras You got")
+        if(hm_discountCart.contains(0))
+          println(hm_discountCart.get(0).get+ " Soaps")
+        if(hm_discountCart.contains(1))
+          println(hm_discountCart.get(1).get+ " Rs Discount on Final order")
+
+
+
       if(x==0)
       callAgain()
     }
+      }
+      return total
+  }
+
   }
   def resetCart(): Unit ={
     hm_cart.clear()
   }
 
+  def sendDataToAdmin(i: Int, qty: Double):String = {
+    dos.writeUTF("hello")
+    dos.writeInt(i)
+    dos.writeDouble(qty)
+
+    val f=dis.readUTF()
+    return f
+  }
+
   def viewoptions(sel_opt: Int): Unit = {
+    if(hm_discounts.contains(sel_opt-1)){
+      println("Hurray Discount is Available")
+      println("-----> "+hm_discounts.get(sel_opt-1).get)
+    }
+
+
     val obj=local_lb(sel_opt-1)
     var qty:Double=0
     if(obj.uom=="kg"){
       println(obj.name+" are Rs. "+obj.amount+" per Kg")
       qty=readLine("Enter Weight in Kg you want: ").toDouble
-      println("Final price is Rs. "+(qty*(obj.amount)))
+       println("Final price is Rs. "+(qty*(obj.amount)))
     }
     else{
       println(obj.name+" is Rs. "+obj.amount+" per Unit")
       qty=readLine("Enter Number of Units you want: ").toInt
-      println("Final price is Rs. "+(qty*obj.amount))
+      var price=(qty * obj.amount)
+      println("Checking for Discounts...waiting for Admin")
+      val b= sendDataToAdmin(sel_opt-1,qty)
+      if(b.matches("soap")){
+       var x=(qty/4).toInt
+        println(x+ "Soaps added extra as Offer")
+        if(!hm_discountCart.contains(0)){
+//          println("price here")
+          hm_discountCart+=(0 -> x)
+        }
+        else{
+//          println("Control here")
+          hm_discountCart.update(0,hm_discountCart.get(0).get+x)
+        }
+      }
+      else if(b.matches("old")){
+        val x=(qty/2).toInt
+        val disc=(0.2)*price
+
+        println("Discount of Rs. "+disc+" given as offer, Discount will be applied during checkout")
+        if(!hm_discountCart.contains(1))
+          hm_discountCart+=(1 -> disc)
+        else{
+          hm_discountCart.update(1,hm_discountCart.get(1).get+disc)
+        }
+      }
+
+//      else if(b.matches("red")){
+//        val x=(qty/3).toInt
+//        println(x +" Old spice added as gift")
+//        if(!hm_discountCart.contains(4))
+//          hm_discountCart+=(4 -> x)
+//        else{
+//          hm_discountCart.update(4,hm_discountCart.get(4).get+x)
+//        }
+//
+//      }
+
+
+      println("Final price is Rs. "+(price))
     }
 
-    println("Are you sure you want to add this item?")
-    val read=readLine("Press Y or N").toLowerCase
-    if(read.matches("n"))
-    {
-      println("No item added to cart")
-      getCartDetails()
-    }
-    else
+//    println("Are you sure you want to add this item?")
+//    val read=readLine("Press Y or N").toLowerCase
+//    if(read.matches("n"))
+//    {
+//      println("No item added to cart")
+//      callAgain()
+//    }
+//    else
     finalToCart(sel_opt-1,qty)
 
   }
@@ -143,18 +222,51 @@ object UserSide{
   def showCurrentStats(id: Int): Unit = {
     println("Item Name: "+local_lb(id).name)
     println("Current Quantity: "+hm_cart.get(id).get)
-    val x=readLine("Want to Change Quantity(Y/N)? ").toLowerCase
-    if(x.matches("n")){
-      val b=readLine("Want to remove this completely (Y/N) ?").toLowerCase()
-      if(b.matches("y"))
-        {
+    val x=readLine("Want to Update or Remove Completely (U/R)? ").toLowerCase
+    if(x.matches("r")){
+
           hm_cart.remove(id)
+          if(hm_discountCart.contains(id))
+            hm_discountCart.remove(id)
+
           println("item removed")
         }
-    }
-    else if(x.matches("y")){
+
+    else if(x.matches("u")){
       val newQty=readLine("Enter Quantity you want: ").toDouble
-      hm_cart.update(id,newQty)
+      if(newQty==0.0){
+        hm_cart.remove(id)
+        println("item removed")
+      }
+      else {
+
+        hm_cart.update(id, newQty)
+
+        val b= sendDataToAdmin(id,newQty)
+        if(b.matches("soap")){
+          var x=(newQty/4).toInt
+          println(x+ "Soaps added extra as Offer")
+          if(!hm_discountCart.contains(0)){
+            //          println("price here")
+            hm_discountCart+=(0 -> x)
+          }
+          else{
+            //          println("Control here")
+            hm_discountCart.update(0,hm_discountCart.get(0).get+x)
+          }
+        }
+        else if(b.matches("old")){
+          val x=(newQty/2).toInt
+          val disc=(0.2)*(newQty*local_lb(id).amount)
+
+          println("Discount of Rs. "+disc+" given as offer, Discount will be applied during checkout")
+          if(!hm_discountCart.contains(1))
+            hm_discountCart+=(1 -> disc)
+          else{
+            hm_discountCart.update(1,hm_discountCart.get(1).get+disc)
+          }
+        }
+      }
       println("Cart Updated")
     }
 
@@ -189,7 +301,19 @@ object UserSide{
         else if(x.matches("y")){
           println("Thanx for Shopping with us :)")
           println("Your order summary is:")
-          viewCart(1)
+          val total=viewCart(1)
+
+          println("Your Final total after applying discount is "+(total-hm_discountCart.get(1).get))
+
+
+          if(hm_discountCart.size!=0){
+            println("In extras You got")
+            if(hm_discountCart.contains(0))
+              println(hm_discountCart.get(0).get+ " Soaps")
+            if(hm_discountCart.contains(1))
+              println(hm_discountCart.get(1).get+ " Rs Discount on Final order")
+
+          }
           System.exit(0)
         }
 
@@ -206,8 +330,44 @@ object UserSide{
 
   }
 
+  def makeConnection() = {
+    try {
+      s = new Socket("127.0.0.1", 9000)
+    }
+    catch {
+      case e : java.net.ConnectException => {println("Switch on the Admin First");System.exit(0)}
+    }
+  }
+
+  var s:Socket=_
+   var dos:DataOutputStream=_
+  var dis:DataInputStream=_
+
+  def startStreams() = {
+    dos=new DataOutputStream(s.getOutputStream)
+    dis=new DataInputStream(s.getInputStream)
+  }
+
+  def sendDataViaStreams() = {
+    val str=dis.readUTF()
+    if(str.matches("helloadmin"))
+      println("Connected to Admin")
+    else
+      println("Switch on the Admin First")
+  }
+
+  def addDiscounts(): Unit = {
+    hm_discounts.put(0,"Buy 4 Lux soaps and Get 1 free")
+    hm_discounts.put(1,"Buy 2 Old Spice Deos and get 20% off ")
+  }
+
   def main(args: Array[String]): Unit = {
     println("Hii! Welcome to the H & M Store")
+
+    addDiscounts()
+    makeConnection()
+    startStreams()
+    sendDataViaStreams()
     val id=getSelOption()
     shwSpecDetails(id)
   }
