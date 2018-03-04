@@ -16,8 +16,9 @@ object UserSide{
     println("Select your Preferred option:")
     println("1. Add items to Cart")
     println("2. Update your Cart")
-    println("3. Remove items From Cart")
-    println("4. View Cart")
+    println("3. View Cart")
+    println("4. Finalize order")
+    println("5. Exit")
     val selected=readLine().toInt
     selected
   }
@@ -35,7 +36,7 @@ object UserSide{
   var local_lb=readFromXml.importdata()
 
   def refreshCartData():List[List[Any]] = {
-    println("Size is "+local_lb.length)
+
 
     var local_list=local_lb.map(formatToList).toList
     local_list=List("ID","Name","Amount")::local_list
@@ -44,7 +45,13 @@ object UserSide{
 
   def finalToCart(opt:Int,qty:Double): Unit ={
 
-      hm_cart+=(opt -> qty)
+    if(hm_cart.contains(opt)){
+      hm_cart.update(opt,(hm_cart.get(opt).get)+qty)
+    }
+
+    else{
+    hm_cart+=(opt -> qty)
+    }
     println("Item Added")
 
     val id=getSelOption()
@@ -58,19 +65,27 @@ object UserSide{
     shwSpecDetails(id)
   }
 
-  def viewCart(): Unit ={
+  def viewCart(x:Int=0): Unit = {
 
-//    println("size is "+hm_cart.size)
-    var obj:Seq[Seq[Any]]=Seq[Seq[Any]]()
-    for(x <- hm_cart){
-      obj=obj:+Seq(x._1,local_lb(x._1).name,x._2)
+    if (hm_cart.isEmpty) {
+      println("Cart is Empty")
+      callAgain()
     }
-    obj=Seq("Id","Name","Qty")+:obj
-    println(Tabulator.format(obj))
+    else {
+      var total:Double=0
+      var obj: Seq[Seq[Any]] = Seq[Seq[Any]]()
+      for (x <- hm_cart) {
+        obj = obj :+ Seq(x._1, local_lb(x._1).name, x._2,(x._2*(local_lb(x._1).amount)))
+        total+=(local_lb(x._1).amount * x._2)
+      }
+      obj = Seq("Id", "Name", "Qty","Price") +: obj
+      obj = obj :+ Seq("-","-","-",total)
+      println(Tabulator.format(obj))
 
-    callAgain()
+      if(x==0)
+      callAgain()
+    }
   }
-
   def resetCart(): Unit ={
     hm_cart.clear()
   }
@@ -115,17 +130,19 @@ object UserSide{
 
   def printToBeupdatedCart(): Unit = {
     var obj:Seq[Seq[Any]]=Seq[Seq[Any]]()
-    for(x <- hm_cart){
-      obj=obj:+Seq(x._1,local_lb(x._1).name,x._2)
+    var total:Double=0
+    for (x <- hm_cart) {
+      obj = obj :+ Seq(x._1, local_lb(x._1).name, x._2,(x._2*(local_lb(x._1).amount)))
+      total+=(local_lb(x._1).amount * x._2)
     }
-    obj=Seq("Id","Name","Qty")+:obj
+    obj = Seq("Id", "Name", "Qty","Price") +: obj
+    obj = obj :+ Seq("-","-","-",total)
     println(Tabulator.format(obj))
-
   }
 
   def showCurrentStats(id: Int): Unit = {
     println("Item Name: "+local_lb(id).name)
-    println("Current Quantity: "+hm_cart.get(id))
+    println("Current Quantity: "+hm_cart.get(id).get)
     val x=readLine("Want to Change Quantity(Y/N)? ").toLowerCase
     if(x.matches("n")){
       val b=readLine("Want to remove this completely (Y/N) ?").toLowerCase()
@@ -144,16 +161,48 @@ object UserSide{
   }
 
   def updateCart(): Unit = {
+    if(hm_cart.isEmpty){
+      println("Cart is Empty")
+      callAgain()
+    }
+    else{
     printToBeupdatedCart()
     val id=readLine("Select Id to update").toInt
     showCurrentStats(id)
+
     callAgain()
+    }
+  }
+
+  def finalizeOrder(): Unit = {
+    println("Your Final Cart Details are: ")
+    println
+    viewCart(1)
+    val ans=readLine("Want to update any Item in your Cart (Y/N) ?").toLowerCase
+    if(ans.matches("y"))
+      updateCart
+    else if(ans.matches("n"))
+      {
+        val x=readLine("Are you sure to Finalize your order (Y/N) ?").toLowerCase()
+        if(x.matches("n"))
+          callAgain()
+        else if(x.matches("y")){
+          println("Thanx for Shopping with us :)")
+          println("Your order summary is:")
+          viewCart(1)
+          System.exit(0)
+        }
+
+      }
   }
 
   def shwSpecDetails(id:Int): Unit = id match {
     case 1 => addToCart()
-    case 2=> updateCart()
-    case 4 => viewCart()
+    case 2 => updateCart()
+    case 3 => viewCart()
+    case 4 => finalizeOrder()
+    case 5 => {println("Thanx for Shopping with us :)");System.exit(0)}
+    case _ => {println("Invalid Input");callAgain()}
 
   }
 
