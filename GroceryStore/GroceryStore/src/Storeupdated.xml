@@ -11,7 +11,7 @@
 				<currency>INR</currency> <!-- Currency alpha3code -->
 			</unitPrice>
 			<quantity>
-				<stock>50.0</stock>
+				<stock>-30.0</stock>
 				<measure>unit</measure>
 <!-- measures could be unit, kg, gm etc. -->
 			</quantity>
@@ -39,7 +39,7 @@
 				<currency>INR</currency> <!-- Currency alpha3code -->
 			</unitPrice>
 			<quantity>
-				<stock>87.0</stock>
+				<stock>92.0</stock>
 				<measure>unit</measure>
 			</quantity>		
 		</item>
@@ -67,7 +67,7 @@
 				<currency>INR</currency> <!-- Currency alpha3code -->
 			</unitPrice>
 			<quantity>
-				<stock>70</stock>
+				<stock>67.0</stock>
 				<measure>unit</measure>
 			</quantity>
 		</item>

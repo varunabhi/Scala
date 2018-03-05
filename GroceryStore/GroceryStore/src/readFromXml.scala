@@ -9,7 +9,7 @@ object readFromXml {
 
   def importdata(): ListBuffer[dataStruct] ={
     lb.clear()
-    val fileLoc=System.getProperty("user.dir")+"/src/Grocerydata.xml"
+    val fileLoc=System.getProperty("user.dir")+"/src/GroceryData.xml"
     val file= XML.loadFile(fileLoc)
     val uid_elem= file \\ "id"
     val name_elem= file \\ "name"

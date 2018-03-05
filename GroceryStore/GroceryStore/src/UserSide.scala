@@ -17,109 +17,111 @@ import scala.collection.mutable.ListBuffer
 
 
 object UserSide {
-  var hm_discounts= new mutable.HashMap[Int,String]()
+  var hm_discounts = new mutable.HashMap[Int, String]()
 
-   var hm_discountCart= new mutable.HashMap[Int,Double]()
+  var hm_discountCart = new mutable.HashMap[Int, Double]()
 
-  var hm_cart=new mutable.HashMap[Int,Double]() //clear was not available in simple Map
+  var hm_cart = new mutable.HashMap[Int, Double]() //clear was not available in simple Map
 
 
-  def getSelOption():Int  ={
+  def getSelOption(): Int = {
     println("Select your Preferred option:")
     println("1. Add items to Cart")
     println("2. Update your Cart")
     println("3. View Cart")
     println("4. Finalize order")
     println("5. Exit")
-    val selected=readLine().toInt
+    val selected = readLine().toInt
     selected
   }
 
   def printTable(): Unit = {
-      val b= refreshCartData()
-     println(Tabulator.format(b))
+    val b = refreshCartData()
+    println(Tabulator.format(b))
   }
 
-  def formatToList(obj:dataStruct): List[Any] ={
-    List(obj.uID,obj.name,obj.amount)
+  def formatToList(obj: dataStruct): List[Any] = {
+    List(obj.uID, obj.name, obj.amount)
   }
 
 
-  var local_lb=readFromXml.importdata()
+  var local_lb = readFromXml.importdata()
 
-  def refreshCartData():List[List[Any]] = {
+  def refreshCartData(): List[List[Any]] = {
 
 
-    var local_list=local_lb.map(formatToList).toList
-    local_list=List("ID","Name","Amount")::local_list
+    var local_list = local_lb.map(formatToList).toList
+    local_list = List("ID", "Name", "Amount") :: local_list
     return local_list
   }
 
-  def finalToCart(opt:Int,qty:Double): Unit ={
+  def finalToCart(opt: Int, qty: Double): Unit = {
 
-    if(hm_cart.contains(opt)){
-      hm_cart.update(opt,(hm_cart.get(opt).get)+qty)
+    if (hm_cart.contains(opt)) {
+      hm_cart.update(opt, (hm_cart.get(opt).get) + qty)
     }
 
-    else{
-    hm_cart+=(opt -> qty)
+    else {
+      hm_cart += (opt -> qty)
     }
     println("Item Added")
 
-    val id=getSelOption()
+    val id = getSelOption()
     shwSpecDetails(id)
 
   }
 
 
   def callAgain(): Unit = {
-    val id=getSelOption()
+    val id = getSelOption()
     shwSpecDetails(id)
   }
 
-  def viewCart(x:Int=0): Double = {
+  def viewCart(x: Int = 0): Double = {
 
+    var total: Double = 0
     if (hm_cart.isEmpty) {
       println("Cart is Empty")
       callAgain()
       return 0
     }
     else {
-      var total:Double=0
       var obj: Seq[Seq[Any]] = Seq[Seq[Any]]()
 
-      var mp:mutable.HashMap[Int,Double]=mutable.HashMap()
-        val obj1= new XMLParser
+      var mp: mutable.HashMap[Int, Double] = mutable.HashMap()
+      val obj1 = new XMLParser
 
       for (x <- hm_cart) {
-        mp+=(x._1 -> x._2)
-        obj = obj :+ Seq(x._1, local_lb(x._1).name, x._2,(x._2*(local_lb(x._1).amount)))
-        total+=(local_lb(x._1).amount * x._2)
+        mp += (x._1 -> x._2)
+        obj = obj :+ Seq(x._1, local_lb(x._1).name, x._2, (x._2 * (local_lb(x._1).amount)))
+        total += (local_lb(x._1).amount * x._2)
       }
-        obj1.data(mp) //Update values in XML file
 
-        obj = Seq("Id", "Name", "Qty","Price") +: obj
-      obj = obj :+ Seq("-","-","-",total)
+      if(x==1)
+      obj1.data(mp) //Update values in XML file
+
+      obj = Seq("Id", "Name", "Qty", "Price") +: obj
+      obj = obj :+ Seq("-", "-", "-", total)
       println(Tabulator.format(obj))
 
-      if(x==0){
-      if(hm_discountCart.size!=0){
-        println("In extras You got")
-        if(hm_discountCart.contains(0))
-          println(hm_discountCart.get(0).get+ " Soaps")
-        if(hm_discountCart.contains(1))
-          println(hm_discountCart.get(1).get+ " Rs Discount on Final order")
+      if (x == 0) {
+        if (hm_discountCart.size != 0) {
+          println("In extras You got")
+          if (hm_discountCart.contains(0))
+            println(hm_discountCart.get(0).get + " Soaps")
+          if (hm_discountCart.contains(1))
+            println(hm_discountCart.get(1).get + " Rs Discount on Final order")
+        }
 
 
-
-      if(x==0)
-      callAgain()
-    }
+        if (x == 0)
+          callAgain()
       }
-      return total
+    }
+    return total
   }
 
-  }
+
   def resetCart(): Unit ={
     hm_cart.clear()
   }
@@ -130,6 +132,7 @@ object UserSide {
     dos.writeDouble(qty)
 
     val f=dis.readUTF()
+    //println(f+" herehere")
     return f
   }
 
@@ -243,11 +246,6 @@ object UserSide {
 
     else if(x.matches("u")){
       val newQty=readLine("Enter Quantity you want: ").toDouble
-      if(newQty==0.0){
-        hm_cart.remove(id)
-        println("item removed")
-      }
-      else {
 
         hm_cart.update(id, newQty)
 
@@ -261,7 +259,7 @@ object UserSide {
           }
           else{
             //          println("Control here")
-            hm_discountCart.update(0,hm_discountCart.get(0).get+x)
+            hm_discountCart.update(0,x)
           }
         }
         else if(b.matches("old")){
@@ -272,14 +270,14 @@ object UserSide {
           if(!hm_discountCart.contains(1))
             hm_discountCart+=(1 -> disc)
           else{
-            hm_discountCart.update(1,hm_discountCart.get(1).get+disc)
+            hm_discountCart.update(1,disc)
           }
         }
       }
       println("Cart Updated")
     }
 
-  }
+
 
   def updateCart(): Unit = {
     if(hm_cart.isEmpty){

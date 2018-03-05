@@ -26,15 +26,7 @@ import scala.collection.mutable
         dBuilder = dbFactory.newDocumentBuilder
         val doc = dBuilder.parse(xmlFile)
         doc.getDocumentElement.normalize
-        //update attribute value
-        //        updateAttributeValue(doc)
-        //update Element value
         updateElementValue(doc, hm)
-        //delete element
-        //        deleteElement(doc)
-        //add new element
-        //        addElement(doc)
-        //write the updated document to file or console
         doc.getDocumentElement.normalize
         val transformerFactory = TransformerFactory.newInstance
         val transformer = transformerFactory.newTransformer
@@ -82,41 +74,6 @@ import scala.collection.mutable
         case e:IOException => e.printStackTrace()
       }
     }
-    //    private def addElement(doc: dom.Document ): Unit = {
-    //      val employees = doc.getElementsByTagName("Employee")
-    //      var emp:Element = null
-    //      //loop for each employee
-    //      var i = 0
-    //      while ( {
-    //        i < employees.getLength
-    //      }) {
-    //        emp = employees.item(i).asInstanceOf[Nothing]
-    //        val salaryElement = doc.createElement("salary")
-    //        salaryElement.appendChild(doc.createTextNode("10000"))
-    //        emp.appendChild(salaryElement)
-    //
-    //        {
-    //          i += 1; i - 1
-    //        }
-    //      }
-    //    }
-
-    //    private def deleteElement(doc: dom.Document): Unit = {
-    //      val employees = doc.getElementsByTagName("Employee")
-    //      var emp:Element = null
-    //      var i = 0
-    //      while ( {
-    //        i < employees.getLength
-    //      }) {
-    //        emp = employees.item(i).asInstanceOf[Nothing]
-    //        val genderNode = emp.getElementsByTagName("gender").item(0)
-    //        emp.removeChild(genderNode)
-    //
-    //        {
-    //          i += 1; i - 1
-    //        }
-    //      }
-    //    }
 
     def updateElementValue(doc: dom.Document, mkp: mutable.HashMap[Int, Double]): Unit = {
       val quantity = doc.getElementsByTagName("quantity")
@@ -131,26 +88,6 @@ import scala.collection.mutable
 
 
       }
-
-      //    private def updateAttributeValue(doc: dom.Document): Unit = {
-      //      val employees = doc.getElementsByTagName("Employee")
-      //      var emp:Element = null
-      //
-      //      val length=employees.getLength
-      //      for(i <- 0 until length){
-      //        emp = employees.item(i).asInstanceOf[Nothing]
-      //        val gender = emp.getElementsByTagName("gender").item(0).getFirstChild.getNodeValue
-      //        if (gender.equalsIgnoreCase("male")) { //prefix id attribute with M
-      //          emp.setAttribute("id", "M" + emp.getAttribute("id"))
-      //        }
-      //        else { //prefix id attribute with F
-      //          emp.setAttribute("id", "F" + emp.getAttribute("id"))
-      //        }
-      //
-      //
-      //    }
-      //  }
-
 
     }
   }

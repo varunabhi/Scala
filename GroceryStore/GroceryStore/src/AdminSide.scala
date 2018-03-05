@@ -47,18 +47,22 @@ object AdminSide extends JFrame{
   }
 
   def readDataViaStreams(): Unit = {
-    while(true){
 
-      dos.writeUTF("helloadmin")
-      var str=dis.readUTF()
-      if(str.matches("hello"))
-        {
-          var i =dis.readInt()
-          var q=dis.readDouble()
-          val g=validateData(i,q)
-          dos.writeUTF(g)
 
-        }
+    dos.writeUTF("helloadmin")
+    while (true) {
+      println("Connection Startedhhhhhhhhhh")
+      var str = dis.readUTF()
+      if (str.matches("hello")) {
+//        println("Hiiii there")
+        var i = dis.readInt()
+        var q = dis.readDouble()
+        val g = validateData(i, q)
+//        println(g+" gsgsgsgsgsgs")
+        dos.writeUTF(g)
+
+
+      }
     }
   }
 
