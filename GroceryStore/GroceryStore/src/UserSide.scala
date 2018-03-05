@@ -2,9 +2,11 @@
 
 
 
-import java.io.{BufferedInputStream, BufferedOutputStream, DataInputStream, DataOutputStream}
+import java.io._
 import java.net.Socket
+
 import javax.swing.{JFrame, JOptionPane}
+import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -85,11 +87,18 @@ object UserSide {
     else {
       var total:Double=0
       var obj: Seq[Seq[Any]] = Seq[Seq[Any]]()
+
+      var mp:mutable.HashMap[Int,Double]=mutable.HashMap()
+        val obj1= new XMLParser
+
       for (x <- hm_cart) {
+        mp+=(x._1 -> x._2)
         obj = obj :+ Seq(x._1, local_lb(x._1).name, x._2,(x._2*(local_lb(x._1).amount)))
         total+=(local_lb(x._1).amount * x._2)
       }
-      obj = Seq("Id", "Name", "Qty","Price") +: obj
+        obj1.data(mp) //Update values in XML file
+
+        obj = Seq("Id", "Name", "Qty","Price") +: obj
       obj = obj :+ Seq("-","-","-",total)
       println(Tabulator.format(obj))
 
@@ -302,7 +311,9 @@ object UserSide {
           println("Thanx for Shopping with us :)")
           println("Your order summary is:")
           val total=viewCart(1)
+          println("Catalogue also updated")
 
+          if(hm_discountCart.contains(1))
           println("Your Final total after applying discount is "+(total-hm_discountCart.get(1).get))
 
 

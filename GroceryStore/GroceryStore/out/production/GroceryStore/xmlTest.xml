@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalogue>
+	<items>
+		<item>
+			<id>1</id>
+			<name>LUX bath soap</name>
+			<uom>gm</uom> <!-- Unit Of Measure -->
+			<unitSize>10</unitSize>
+			<unitPrice>
+				<amount>12.00</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>50.0</stock>
+				<measure>unit</measure>
+<!-- measures could be unit, kg, gm etc. -->
+			</quantity>
+		</item>
+		<item> <id>2</id>
+			<name>Old Spice Deodrent</name>
+			<uom>gm</uom> <!-- Unit Of Measure -->
+			<unitSize>200</unitSize>
+			<unitPrice>
+				<amount>180.00</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>50.0</stock>
+				<measure>unit</measure>
+			</quantity>
+		 </item>
+		<item>
+			<id>3</id>
+			<name>Nivea Men Face Wash</name>
+			<uom>gm</uom> <!-- Unit Of Measure -->
+			<unitSize>150</unitSize>
+			<unitPrice>
+				<amount>65.0</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>100</stock>
+				<measure>unit</measure>
+			</quantity>		
+		</item>
+		<item>
+			<id>4</id>
+			<name>Apples</name>
+			<uom>kg</uom> <!-- Unit Of Measure -->
+			<unitSize>1</unitSize>
+			<unitPrice>
+				<amount>120.00</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>50</stock>
+				<measure>unit</measure>
+			</quantity>
+		</item>
+		<item>
+			<id>5</id>
+			<name>Red Bull Energy Drink</name>
+			<uom>ml</uom> <!-- Unit Of Measure -->
+			<unitSize>250</unitSize>
+			<unitPrice>
+				<amount>80.00</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>70</stock>
+				<measure>unit</measure>
+			</quantity>
+		</item>
+		<item>
+			<id>6</id>
+			<name>Alphonso Mango</name>
+			<uom>kg</uom> <!-- Unit Of Measure -->
+			<unitSize>1</unitSize>
+			<unitPrice>
+				<amount>180.00</amount>
+				<currency>INR</currency> <!-- Currency alpha3code -->
+			</unitPrice>
+			<quantity>
+				<stock>40</stock>
+				<measure>unit</measure>
+			</quantity>
+		</item>
+</items>
+</catalogue>

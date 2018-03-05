@@ -65,7 +65,7 @@ object AdminSide extends JFrame{
 
   def importXml() = {
     lb=readFromXml.importdata()
-    
+
   }
 
   def mapDiscounts() = {
