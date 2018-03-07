@@ -11,23 +11,31 @@ object readFromXml {
     lb.clear()
     val fileLoc=System.getProperty("user.dir")+"/src/GroceryData.xml"
     val file= XML.loadFile(fileLoc)
-    val uid_elem= file \\ "id"
-    val name_elem= file \\ "name"
-    val uom_elem= file \\ "uom"
-    val us_elem= file \\ "unitSize"
-    val amount_elem= file \\ "amount"
-    val curr_elem= file \\ "currency"
-    val stock_elem= file \\ "stock"
-
-    val count=name_elem.length
+    val catId_elem= file \\ "category"
+       val lnth=catId_elem.length
     var temp=0
+    while (temp<lnth){
+    val scID=catId_elem(temp).attribute("id").get.toString().toInt
+    val uid_elem= catId_elem(temp) \\ "id"
+    val name_elem= catId_elem(temp) \\ "name"
+    val uom_elem= catId_elem(temp) \\ "uom"
+    val us_elem= catId_elem(temp) \\ "unitSize"
+    val amount_elem= catId_elem(temp) \\ "amount"
+    val curr_elem= catId_elem(temp) \\ "currency"
+    val stock_elem= catId_elem(temp) \\ "stock"
 
-    while (temp<count){
-      lb+= (new dataStruct(uid_elem(temp).text.toInt,name_elem(temp).text,uom_elem(temp).text,us_elem(temp).text.toInt,amount_elem(temp).text.toDouble,curr_elem(temp).text,stock_elem(temp).text))
+      var ct= (catId_elem(temp) \\ "items")
+      var ln=(ct \\ "item").length
+      var temp1=0
+    while (temp1<ln){
+
+      lb+= (new dataStruct(scID,uid_elem(temp1).text.toInt,name_elem(temp1).text,uom_elem(temp1).text,us_elem(temp1).text.toInt,amount_elem(temp1).text.toDouble,curr_elem(temp1).text,stock_elem(temp1).text))
+      temp1+=1
+    }
       temp+=1
+
     }
     return lb
-
   }
 
   import java.util.Calendar
@@ -54,13 +62,13 @@ object readFromXml {
   }
 
   def getData(): Unit ={
-    lb.foreach((obj) => (println(obj.uID,obj.name+" "+obj.us+" "+obj.uom+" "+obj.currency+" "+obj.amount+" "+obj.stock)))
+    lb.foreach((obj) => (println(obj.SuperCatId,obj.uID,obj.name+" "+obj.us+" "+obj.uom+" "+obj.currency+" "+obj.amount+" "+obj.stock)))
 
   }
 
   def main(args: Array[String]): Unit = {
     importdata()
-    updateData()
+//    updateData()
     getData()
 //    while (true){
 //
@@ -70,26 +78,17 @@ object readFromXml {
 
 }
 
- class dataStruct(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String,extra:String){
-  var uID:Integer=null
-   var name:String= null
-  var uom:String= null
-  var us:Integer  = null
-  var amount:Double= _
-  var currency:String= null
-  var stock:String= null
-
-  def this(uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String){
-    this(uid,nm,um,usz,amt,curr,stk,null)
-    this.uID=this.uid
-    this.name=this.nm
-    this.uom=this.um
-    this.us=this.usz
-    this.amount=this.amt
-    this.currency=this.curr
-    this.stock=this.stk
+ class dataStruct(scId:Int,uid:Int,nm:String, um:String,usz:Int,amt:Double,curr:String, stk:String){
+   val SuperCatId:Int=scId
+   var uID:Integer=uid
+   var name:String= nm
+  var uom:String= um
+  var us:Integer  = usz
+  var amount:Double= amt
+  var currency:String= curr
+  var stock:String= stk
 
   }
 
 
-}
+

@@ -84,6 +84,7 @@ import scala.collection.mutable
       for (i <- mkp) {
         qty = quantity.item(i._1).asInstanceOf[Element]
         val name = qty.getElementsByTagName("stock").item(0).getFirstChild
+        println(name+" is this")
         name.setNodeValue((name.getNodeValue.toDouble - (i._2)).toString)
 
 
